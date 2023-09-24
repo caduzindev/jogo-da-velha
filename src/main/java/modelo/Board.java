@@ -6,32 +6,38 @@ import java.util.ArrayList;
 
 public class Board {
     private JFrame frame;
-    private ArrayList<Field> fields = new ArrayList<>();
+    private final ArrayList<Field> fields = new ArrayList<>();
     private final SymbolField[] symbolises = {SymbolField.X, SymbolField.CIRCLE};
     private int alternateSymbol = 0;
 
-    private int[][] moveTo = { {-1,1},{-3,3},{-2,2},{-4,4} };
+    private final int[][] moveTo = { {-1,1},{-3,3},{-2,2},{-4,4} };
 
     public void initialize() {
         for (var i = 0;i<9;i++) {
             this.fields.add(new Field(i, this));
         }
-        this.frame = new JFrame("Frame teste");
+        JFrame frame = this.getFrame();
 
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        this.frame.getContentPane().setLayout(new GridLayout(0,3,3,3));
+        frame.getContentPane().setLayout(new GridLayout(0,3,3,3));
 
         for (Field field : this.getFields()) {
             var component = field.getComponent();
-            this.frame.getContentPane().add(component);
+            frame.getContentPane().add(component);
         }
 
-        this.frame.pack();
-        this.frame.setVisible(true);
+        frame.pack();
+        frame.setVisible(true);
     }
 
     private JFrame getFrame() {
+        if (this.frame != null) return this.frame;
+        JFrame frame = new JFrame("Jogo da Velha");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(new GridLayout(0,3,3,3));
+
+        this.frame = frame;
         return this.frame;
     }
 
