@@ -11,7 +11,7 @@ public class Field extends MouseEventListener {
     private final Board board;
     private final JPanel component;
 
-    private String symblo = null;
+    private String value = null;
 
     public Field(int index, Board board) {
         super();
@@ -40,10 +40,13 @@ public class Field extends MouseEventListener {
         return index;
     }
     public void onClickField(MouseEvent event) {
-        var actualSymblo = this.board.getSymbol();
-        this.symblo = actualSymblo;
+        this.board.getPlayer().makeMove(this.board, this);
+    }
 
-        var label = new JLabel(actualSymblo);
+    public void check(String value) {
+        this.value = value;
+
+        var label = new JLabel(value);
         label.setFont(new Font("Arial", Font.BOLD, 60));
         label.setOpaque(true);
         label.setBackground(Color.DARK_GRAY);
@@ -56,15 +59,13 @@ public class Field extends MouseEventListener {
         this.component.add(label, gridLayout);
         this.component.revalidate();
         this.component.repaint();
-
-        this.board.didWin(this.getIndex());
     }
 
     public JPanel getComponent() {
         return component;
     }
 
-    public String getSymblo() {
-        return this.symblo;
+    public String getValue() {
+        return this.value;
     }
 }

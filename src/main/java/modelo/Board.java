@@ -1,5 +1,8 @@
 package modelo;
 
+import modelo.user.Player;
+import modelo.user.User;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -7,10 +10,8 @@ import java.util.ArrayList;
 public class Board {
     private JFrame frame;
     private final ArrayList<Field> fields = new ArrayList<>();
-    private final SymbolField[] symbolises = {SymbolField.X, SymbolField.CIRCLE};
-    private int alternateSymbol = 0;
-
     private final int[][] moveTo = { {-1,1},{-3,3},{-2,2},{-4,4} };
+    private User player = new Player();
 
     public void initialize() {
         for (var i = 0;i<9;i++) {
@@ -45,13 +46,6 @@ public class Board {
         return this.fields;
     }
 
-    public String getSymbol() {
-        var symbol = this.symbolises[this.alternateSymbol];
-        this.alternateSymbol ^= 1;
-
-        return symbol.toString();
-    }
-
     public void didWin(int posIndexField) {
         Field field = this.fields.get(posIndexField);
         for (var pos : this.moveTo) {
@@ -61,12 +55,12 @@ public class Board {
             var totFirstDirection = dfsCombinations(
                     field.getIndex() + firstPos,
                     firstPos,
-                    field.getSymblo()
+                    field.getValue()
             );
             var totSecondDirection = dfsCombinations(
                     field.getIndex() + secondPos,
                     secondPos,
-                    field.getSymblo()
+                    field.getValue()
             );
 
             var soma = (totFirstDirection + totSecondDirection) + 1;
@@ -80,7 +74,7 @@ public class Board {
     private int dfsCombinations(int index, int move, String symbol) {
         if (index < 0 || index >= this.fields.size()) return 0;
 
-        var actualSymbol = this.fields.get(index).getSymblo();
+        var actualSymbol = this.fields.get(index).getValue();
         if (actualSymbol != null && actualSymbol.equals(symbol)) {
             return 1 + dfsCombinations(index + move, move, symbol);
         }
@@ -94,5 +88,9 @@ public class Board {
         }
         this.fields.clear();
         this.initialize();
+    }
+
+    public User getPlayer() {
+        return this.player;
     }
 }
