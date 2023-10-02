@@ -4,18 +4,24 @@ import modelo.Board;
 import modelo.Field;
 import modelo.SymbolField;
 
-import javax.swing.*;
-import java.awt.*;
-
 public class Player implements User {
     private final SymbolField symbol = SymbolField.X;
     @Override
     public void makeMove(Board board, Field field) {
-        field.check(this.getSymbol());
-        board.didWin(field.getIndex());
+        if (!board.isFinished()) {
+            field.check(this.getSymbol());
+
+            var win = board.won(field.getIndex());
+            if (win) board.clearBoard();
+
+            var tied = board.tied();
+            if (tied) board.clearBoard();
+
+            if (win || tied) board.setFinished(true);
+        }
     }
 
-    private String getSymbol() {
+    public String getSymbol() {
         return this.symbol.toString();
     }
 }

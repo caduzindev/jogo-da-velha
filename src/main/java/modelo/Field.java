@@ -41,10 +41,11 @@ public class Field extends MouseEventListener {
     }
     public void onClickField(MouseEvent event) {
         this.board.getPlayer().makeMove(this.board, this);
+        this.board.getIA().makeMove(this.board, this);
     }
 
     public void check(String value) {
-        this.value = value;
+        this.setValue(value);
 
         var label = new JLabel(value);
         label.setFont(new Font("Arial", Font.BOLD, 60));
@@ -56,9 +57,9 @@ public class Field extends MouseEventListener {
         gridLayout.gridx = 0;
         gridLayout.gridy = 0;
 
-        this.component.add(label, gridLayout);
-        this.component.revalidate();
-        this.component.repaint();
+        this.getComponent().add(label, gridLayout);
+        this.getComponent().revalidate();
+        this.getComponent().repaint();
     }
 
     public JPanel getComponent() {
@@ -67,5 +68,9 @@ public class Field extends MouseEventListener {
 
     public String getValue() {
         return this.value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

@@ -1,5 +1,6 @@
 package modelo;
 
+import modelo.user.IA;
 import modelo.user.Player;
 import modelo.user.User;
 
@@ -7,11 +8,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class Board {
     private JFrame frame;
     private final ArrayList<Field> fields = new ArrayList<>();
-    private final int[][] moveTo = { {-1,1},{-3,3},{-2,2},{-4,4} };
-    private User player = new Player();
+    private final User player = new Player();
+    private final User IA = new IA();
+    public boolean finished = false;
 
     public void initialize() {
         for (var i = 0;i<9;i++) {
@@ -46,43 +51,53 @@ public class Board {
         return this.fields;
     }
 
-    public void didWin(int posIndexField) {
+    public boolean won(int posIndexField) {
         Field field = this.fields.get(posIndexField);
-        for (var pos : this.moveTo) {
-            var firstPos = pos[0];
-            var secondPos = pos[1];
+        for (int i = 0; i < 3; i++) {
+            int rowIndex = i * 3;
+            int colIndex = i;
 
-            var totFirstDirection = dfsCombinations(
-                    field.getIndex() + firstPos,
-                    firstPos,
-                    field.getValue()
-            );
-            var totSecondDirection = dfsCombinations(
-                    field.getIndex() + secondPos,
-                    secondPos,
-                    field.getValue()
-            );
+            boolean allMatchInRow = IntStream.range(0, 3)
+                    .allMatch(indexRange -> {
+                        var valueActualField = this.getFields().get(rowIndex + indexRange).getValue();
+                        if (valueActualField == null) return false;
+                        return valueActualField.equals(field.getValue());
+                    });
 
-            var soma = (totFirstDirection + totSecondDirection) + 1;
-            if (soma == 3) {
-                System.out.println("Temos um vencedor!!!!");
-                this.clearBoard();
+            boolean allMatchInCol = IntStream.range(0, 3)
+                    .allMatch(indexRange -> {
+                        var valueActualField = this.getFields().get(colIndex + indexRange * 3).getValue();
+                        if (valueActualField == null) return false;
+                        return valueActualField.equals(field.getValue());
+                    });
+
+            if (allMatchInRow || allMatchInCol) {
+                return true;
             }
         }
+
+        boolean allMatchInMainDiagonal = IntStream.range(0, 3)
+                .allMatch(indexRange -> {
+                    var valueActualField = this.getFields().get(indexRange * 3 + indexRange).getValue();
+                    if (valueActualField == null) return false;
+                    return valueActualField.equals(field.getValue());
+                });
+
+        boolean allMatchInAntiDiagonal = IntStream.range(0, 3)
+                .allMatch(indexRange -> {
+                    var valueActualField = this.getFields().get(indexRange * 3 + (2 - indexRange)).getValue();
+                    if (valueActualField == null) return false;
+                    return valueActualField.equals(field.getValue());
+                });
+
+        return allMatchInMainDiagonal || allMatchInAntiDiagonal;
     }
 
-    private int dfsCombinations(int index, int move, String symbol) {
-        if (index < 0 || index >= this.fields.size()) return 0;
-
-        var actualSymbol = this.fields.get(index).getValue();
-        if (actualSymbol != null && actualSymbol.equals(symbol)) {
-            return 1 + dfsCombinations(index + move, move, symbol);
-        }
-
-        return 0;
+    public boolean tied() {
+        return this.getFields().stream().noneMatch(field -> field.getValue() == null);
     }
 
-    private void clearBoard() {
+    public void clearBoard() {
         for (Field field : this.fields) {
             field.remove();
         }
@@ -92,5 +107,24 @@ public class Board {
 
     public User getPlayer() {
         return this.player;
+    }
+
+    public User getIA() {
+        return this.IA;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
+    public ArrayList<Field> avaiableFields() {
+        return this.getFields()
+                .stream()
+                .filter(actualField -> actualField.getValue() == null)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }
