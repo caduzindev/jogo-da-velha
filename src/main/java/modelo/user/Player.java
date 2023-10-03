@@ -11,13 +11,11 @@ public class Player implements User {
         if (!board.isFinished()) {
             field.check(this.getSymbol());
 
-            var win = board.won(field.getIndex());
-            if (win) board.clearBoard();
+            var win = board.won(field.getIndex(), this);
+            if (win) board.finishBoard();
 
             var tied = board.tied();
             if (tied) board.clearBoard();
-
-            if (win || tied) board.setFinished(true);
         }
     }
 

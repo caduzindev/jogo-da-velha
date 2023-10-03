@@ -50,7 +50,7 @@ public class Field extends MouseEventListener {
         var label = new JLabel(value);
         label.setFont(new Font("Arial", Font.BOLD, 60));
         label.setOpaque(true);
-        label.setBackground(Color.DARK_GRAY);
+        label.setBackground(new Color(255, 255, 255, 0));
         label.setForeground(Color.WHITE);
 
         var gridLayout = new GridBagConstraints();
@@ -58,8 +58,12 @@ public class Field extends MouseEventListener {
         gridLayout.gridy = 0;
 
         this.getComponent().add(label, gridLayout);
-        this.getComponent().revalidate();
-        this.getComponent().repaint();
+        this.refresh();
+    }
+
+    public void setBackgroundColor(Color color) {
+        this.getComponent().setBackground(color);
+        this.refresh();
     }
 
     public JPanel getComponent() {
@@ -72,5 +76,10 @@ public class Field extends MouseEventListener {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public void refresh() {
+        this.getComponent().revalidate();
+        this.getComponent().repaint();
     }
 }

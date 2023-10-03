@@ -41,4 +41,13 @@ public class Board extends Game {
                 .filter(actualField -> actualField.getValue() == null)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
+
+    private void paintFieldsWinner() {
+        this.getWinner().getWinnerFields().forEach(field -> field.setBackgroundColor(Color.GREEN));
+    }
+
+    public void finishBoard() {
+        this.setFinished(true);
+        this.paintFieldsWinner();
+    }
 }

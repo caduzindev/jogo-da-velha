@@ -8,6 +8,8 @@ import modelo.user.User;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public abstract class Game {
@@ -16,6 +18,7 @@ public abstract class Game {
     public boolean finished = false;
     private final User player = new Player();
     private final User IA = new IA();
+    private Winner winner;
     protected JFrame getFrame() {
         if (this.frame != null) return this.frame;
         JFrame frame = new JFrame("Jogo da Velha");
@@ -25,7 +28,7 @@ public abstract class Game {
         this.frame = frame;
         return this.frame;
     }
-    public boolean won(int posIndexField) {
+    public boolean won(int posIndexField, User user) {
         Field field = this.fields.get(posIndexField);
         for (int i = 0; i < 3; i++) {
             int rowIndex = i * 3;
@@ -45,7 +48,13 @@ public abstract class Game {
                         return valueActualField.equals(field.getValue());
                     });
 
-            if (allMatchInRow || allMatchInCol) {
+            if (allMatchInRow) {
+                this.setWinner(user, this.getFieldsWinner(indexRange -> rowIndex + indexRange));
+                return true;
+            }
+
+            if (allMatchInCol) {
+                this.setWinner(user, this.getFieldsWinner(indexRange -> colIndex + indexRange * 3));
                 return true;
             }
         }
@@ -56,6 +65,10 @@ public abstract class Game {
                     if (valueActualField == null) return false;
                     return valueActualField.equals(field.getValue());
                 });
+        if (allMatchInMainDiagonal) {
+            this.setWinner(user, this.getFieldsWinner(indexRange -> indexRange * 3 + indexRange));
+            return true;
+        }
 
         boolean allMatchInAntiDiagonal = IntStream.range(0, 3)
                 .allMatch(indexRange -> {
@@ -63,8 +76,12 @@ public abstract class Game {
                     if (valueActualField == null) return false;
                     return valueActualField.equals(field.getValue());
                 });
+        if (allMatchInAntiDiagonal) {
+            this.setWinner(user, this.getFieldsWinner(indexRange -> indexRange * 3 + (2 - indexRange)));
+            return true;
+        }
 
-        return allMatchInMainDiagonal || allMatchInAntiDiagonal;
+        return false;
     }
 
     public boolean tied() {
@@ -89,5 +106,20 @@ public abstract class Game {
 
     public User getIA() {
         return this.IA;
+    }
+
+    private void setWinner(User user, ArrayList<Field> fields) {
+        this.winner = new Winner(user);
+        winner.setWinnerFields(fields);
+    }
+
+    public Winner getWinner() {
+        return this.winner;
+    }
+
+    private ArrayList<Field> getFieldsWinner(Function<Integer, Integer> expression) {
+        return IntStream.range(0,3)
+                .mapToObj(indexRange -> this.getFields().get(expression.apply(indexRange)))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

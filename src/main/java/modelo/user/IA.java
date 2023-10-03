@@ -17,7 +17,7 @@ public class IA implements User{
 
             for (Field actualField : board.avaiableFields()) {
                 actualField.setValue(this.getSymbol());
-                int bestValueMove = minimax(board, actualField, false);
+                int bestValueMove = minimax(board, actualField, this,false);
 
                 if (bestValueMove > bestValue) {
                     bestValue = bestValueMove;
@@ -28,18 +28,16 @@ public class IA implements User{
 
             bestField.check(this.getSymbol());
 
-            var win = board.won(bestField.getIndex());
-            if (win) board.clearBoard();
+            var win = board.won(bestField.getIndex(), this);
+            if (win) board.finishBoard();
 
             var tied = board.tied();
             if (tied) board.clearBoard();
-
-            if (win || tied) board.setFinished(true);
         }
     }
 
-    private int minimax(Board board, Field field, boolean isMax) {
-        var wonGame = board.won(field.getIndex());
+    private int minimax(Board board, Field field, User user, boolean isMax) {
+        var wonGame = board.won(field.getIndex(), user);
 
         if (field.getValue().equals(this.getSymbol()) && wonGame) {
             return 1;
@@ -55,7 +53,7 @@ public class IA implements User{
 
             for (Field actualField : board.avaiableFields()) {
                 actualField.setValue(this.getSymbol());
-                bestValue = Math.max(bestValue,minimax(board,actualField, false));
+                bestValue = Math.max(bestValue,minimax(board,actualField, user,false));
                 actualField.setValue(null);
             }
 
@@ -65,7 +63,7 @@ public class IA implements User{
 
             for (Field actualField : board.avaiableFields()) {
                 actualField.setValue(SymbolField.X.toString());
-                bestValue = Math.min(bestValue,minimax(board,actualField, true));
+                bestValue = Math.min(bestValue,minimax(board,actualField, user,true));
                 actualField.setValue(null);
             }
 
