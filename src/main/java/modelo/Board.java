@@ -46,8 +46,16 @@ public class Board extends Game {
         this.getWinner().getWinnerFields().forEach(field -> field.setBackgroundColor(Color.GREEN));
     }
 
-    public void finishBoard() {
+    public void finishBoardWin() {
         this.setFinished(true);
         this.paintFieldsWinner();
+        this.emitWinSound();
+        this.clearBoard();
+    }
+
+    public void finishBoardTie() {
+        this.setFinished(true);
+        this.emitTieSound();
+        this.clearBoard();
     }
 }

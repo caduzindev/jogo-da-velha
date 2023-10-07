@@ -29,10 +29,10 @@ public class IA implements User{
             bestField.check(this.getSymbol());
 
             var win = board.won(bestField.getIndex(), this);
-            if (win) board.finishBoard();
+            if (win) board.finishBoardWin();
 
             var tied = board.tied();
-            if (tied) board.clearBoard();
+            if (tied) board.finishBoardTie();
         }
     }
 
