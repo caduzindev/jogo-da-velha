@@ -46,7 +46,10 @@ public class Board extends Game {
         this.setFinished(true);
         this.paintFieldsWinner();
         this.emitWinSound();
-        this.clearBoard();
+
+        Timer timer = new Timer(6000, e -> this.clearBoard());
+        timer.setRepeats(false);
+        timer.start();
     }
 
     public void finishBoardTie() {
