@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public abstract class Game extends Sounds {
+public abstract class Game extends Actions {
     private JFrame frame;
     protected final ArrayList<Field> fields = new ArrayList<>();
     public boolean finished = false;

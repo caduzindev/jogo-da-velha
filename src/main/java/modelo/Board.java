@@ -14,16 +14,12 @@ public class Board extends Game {
         }
         JFrame frame = this.getFrame();
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        frame.getContentPane().setLayout(new GridLayout(0,3,3,3));
-
         for (Field field : this.getFields()) {
             var component = field.getComponent();
             frame.getContentPane().add(component);
         }
 
-        frame.pack();
+        frame.setSize(600,600);
         frame.setVisible(true);
     }
 
@@ -55,6 +51,7 @@ public class Board extends Game {
 
     public void finishBoardTie() {
         this.setFinished(true);
+        this.tieAnimation(this.getFrame());
         this.emitTieSound();
         this.clearBoard();
     }
