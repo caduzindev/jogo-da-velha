@@ -42,6 +42,7 @@ public class Field extends MouseEventListener {
     public void onClickField(MouseEvent event) {
         this.board.getPlayer().makeMove(this.board, this);
         this.board.getIA().makeMove(this.board, this);
+        if (this.board.isFinished()) this.board.setFinished(false);
     }
 
     public void check(String value) {

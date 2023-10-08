@@ -4,8 +4,6 @@ import helper.Path;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Animations {
     protected void tieAnimation(JFrame frame) {
@@ -27,16 +25,11 @@ public class Animations {
 
         frame.repaint();
 
-        Timer timer = new Timer(7000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(() -> {
-                    frame.getLayeredPane().remove(panel);
-                    frame.getLayeredPane().revalidate();
-                    frame.getLayeredPane().repaint();
-                });
-            }
-        });
+        Timer timer = new Timer(7000, e -> SwingUtilities.invokeLater(() -> {
+            frame.getLayeredPane().remove(panel);
+            frame.getLayeredPane().revalidate();
+            frame.getLayeredPane().repaint();
+        }));
 
         timer.setRepeats(false);
         timer.start();
