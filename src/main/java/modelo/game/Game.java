@@ -109,7 +109,7 @@ public abstract class Game extends Actions {
     }
 
     private void setWinner(User user, ArrayList<Field> fields) {
-        this.winner = new Winner(user);
+        this.winner = new Winner();
         winner.setWinnerFields(fields);
     }
 
